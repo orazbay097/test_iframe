@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+</head>
+
+<body>
+  <script>
+    const message = {
+        event: "getId",
+        value: localStorage.getItem("userId")
+    };
+
+    parent.postMessage(JSON.stringify(message), "*");
+  </script>
+</body>
+</html>
