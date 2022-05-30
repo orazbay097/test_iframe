@@ -7,12 +7,40 @@
 
 <body>
   <script>
-    const message = {
-        event: "getId",
-        value: localStorage.getItem("userId")
-    };
+    const KEY_USER_ID = 'userId';
 
+    const message = {
+      event: "getId",
+      value: getId(),
+    };
     parent.postMessage(JSON.stringify(message), "*");
+
+    const getId = () => {
+      let id = localStorage.getItem(KEY_USER_ID);
+      if (!id) {
+        id = uuidv4();
+        localStorage.setItem(KEY_USER_ID, id);
+      }
+
+      return id;
+    }
+
+    const uuidv4 = () => {
+      let date = new Date().getTime();
+      let date2 = (performance && performance.now && (performance.now() * 1000)) || 0;
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (match) => {
+        let random = Math.random() * 16;
+        if (date > 0) {
+          random = (date + random) % 16 | 0;
+          date = Math.floor(date / 16);
+        } else {
+          random = (date2 + random) % 16 | 0;
+          date2 = Math.floor(date2 / 16);
+        }
+        return (match === 'x' ? random : (random & 0x3 | 0x8)).toString(16);
+      });
+    }    
   </script>
 </body>
+
 </html>
