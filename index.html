@@ -26,10 +26,10 @@
         return getIdFromFingerprint();
       }
 
-      let id = localStorage.getItem(KEY_USER_ID);
+      let id = getIdFromLS();
       if (!id) {
         id = uuidv4();
-        localStorage.setItem(KEY_USER_ID, id);
+        setIdToLS(id);
       }
 
       return Promise.resolve(id);
@@ -39,7 +39,7 @@
     function isSafari() { return !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/); }
 
     function getIdFromFingerprint() {
-      const id = localStorage.getItem(KEY_USER_ID);
+      const id = getIdFromLS();
 
       if (id) return Promise.resolve(id);
 
@@ -47,7 +47,7 @@
         .then(FingerprintJS => FingerprintJS.load())
         .then(fp => fp.get())
         .then(result => {
-          localStorage.setItem(KEY_USER_ID, result.visitorId);
+          setIdToLS(result.visitorId);
           return result.visitorId
         });
     }
@@ -67,7 +67,23 @@
         }
         return (match === 'x' ? random : (random & 0x3 | 0x8)).toString(16);
       });
-    }    
+    }
+    
+    function getIdFromLS(){
+      try{
+        return localStorage.getItem(KEY_USER_ID);
+      }catch(e){
+        console.error(e);
+      }
+    }
+
+    function setIdToLS(id){
+      try{
+        localStorage.setItem(KEY_USER_ID, id);
+      }catch(e){
+        console.error(e);
+      }
+    }
   </script>
 </body>
 
