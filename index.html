@@ -9,23 +9,50 @@
   <script>
     const KEY_USER_ID = 'userId';
 
-    const message = {
-      event: "getId",
-      value: getId(),
-    };
-    parent.postMessage(JSON.stringify(message), "*");
+    getId().then(id => {
+      const message = {
+        event: "getId",
+        value: id,
+      };
 
-    const getId = () => {
+      parent.postMessage(JSON.stringify(message), "*");
+    });
+
+
+
+    function getId() {
+      if (isSafari()) {
+        return getIdFromFingerprint();
+      }
+
       let id = localStorage.getItem(KEY_USER_ID);
       if (!id) {
         id = uuidv4();
         localStorage.setItem(KEY_USER_ID, id);
       }
 
-      return id;
+      return Promise.resolve(id);
     }
 
-    const uuidv4 = () => {
+
+    function isSafari() { return /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && window['safari'].pushNotification)); }
+
+    function getIdFromFingerprint() {
+      const id = localStorage.getItem(KEY_USER_ID);
+
+      if (id) return Promise.resolve(id);
+
+      return import('https://fpcdn.io/v3/1ItjaKwplSsZ3CpiS7pJ')
+        .then(FingerprintJS => FingerprintJS.load())
+        .then(fp => fp.get())
+        .then(result => {
+          localStorage.setItem(KEY_USER_ID, result.visitorId);
+          return result.visitorId
+        });
+    }
+
+
+    function uuidv4() {
       let date = new Date().getTime();
       let date2 = (performance && performance.now && (performance.now() * 1000)) || 0;
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (match) => {
