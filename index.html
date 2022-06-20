@@ -36,7 +36,7 @@
     }
 
 
-    function isSafari() { return /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && window['safari'].pushNotification)); }
+    function isSafari() { return !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/); }
 
     function getIdFromFingerprint() {
       const id = localStorage.getItem(KEY_USER_ID);
