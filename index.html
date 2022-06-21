@@ -20,9 +20,8 @@
 
 
 
-    function getId() {
-      if (isSafari()) {
-        console.log('safari');
+    async function getId() {
+      if (isSafari() || await isBrave()) {
         return getIdFromFingerprint();
       }
 
@@ -37,6 +36,8 @@
 
 
     function isSafari() { return !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/); }
+
+    async function isBrave() { return navigator.brave && await navigator.brave.isBrave(); }
 
     function getIdFromFingerprint() {
       const id = getIdFromLS();
@@ -68,19 +69,19 @@
         return (match === 'x' ? random : (random & 0x3 | 0x8)).toString(16);
       });
     }
-    
-    function getIdFromLS(){
-      try{
+
+    function getIdFromLS() {
+      try {
         return localStorage.getItem(KEY_USER_ID);
-      }catch(e){
+      } catch (e) {
         console.error(e);
       }
     }
 
-    function setIdToLS(id){
-      try{
+    function setIdToLS(id) {
+      try {
         localStorage.setItem(KEY_USER_ID, id);
-      }catch(e){
+      } catch (e) {
         console.error(e);
       }
     }
