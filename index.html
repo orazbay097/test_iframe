@@ -22,7 +22,8 @@
 
     async function getId() {
       if (isSafari() || await isBrave()) {
-        return getIdFromFingerprint();
+        const fingerPrintId = await getIdFromFingerprint();
+        if(fingerPrintId) return fingerPrintId;
       }
 
       let id = getIdFromLS();
@@ -50,7 +51,8 @@
         .then(result => {
           setIdToLS(result.visitorId);
           return result.visitorId
-        });
+        })
+        .catch(e => console.error('fingerprint error', e));
     }
 
 
