@@ -22,8 +22,8 @@
 
     async function getId() {
       if (isSafari() || await isBrave()) {
-        const fingerPrintId = await getIdFromFingerprint();
-        if(fingerPrintId) return fingerPrintId;
+        const fingerprintId = await getIdFromFingerprint();
+        if(fingerprintId) return fingerprintId;
       }
 
       let id = getIdFromLS();
